@@ -3,7 +3,9 @@ package br.com.vemprafam.dao;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -15,7 +17,7 @@ public class DaoAluno {
 	private String password="";
 	private String url="jdbc:hsqldb:hsql://localhost/";
 	private Connection connection =null;
-	
+
 	public DaoAluno() {
 		super();
 		try {
@@ -37,23 +39,76 @@ public class DaoAluno {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
+
 	}
-	
+
 	public List<Aluno> getLista() {
-		return null;
+		List<Aluno> result = new ArrayList<Aluno>();
+		try {
+			String sql = "SELECT RA,NOME,DATANASCIMENTO,RENDA FROM ALUNOS";
+			PreparedStatement pstmt = connection.prepareStatement(sql);
+			ResultSet rs = pstmt.executeQuery();
+			while( rs.next() ) {
+				int ra = rs.getInt(1);
+				String nome = rs.getString("NOME");
+				Date dataNascimento = rs.getDate(3);
+				double renda = rs.getDouble(4);
+				Aluno aluno = new Aluno(ra,nome,dataNascimento,renda);
+				result.add(aluno);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return result;
 	}
-	
+
 	public Aluno buscarPeloRa( int ra ) {
+		try {
+			String sql = "SELECT RA,NOME,DATANASCIMENTO,RENDA FROM ALUNOS WHERE RA=?";
+			PreparedStatement pstmt = connection.prepareStatement(sql);
+			pstmt.setInt(1, ra);
+			ResultSet rs = pstmt.executeQuery();
+			if ( rs.next() ) {
+				String nome = rs.getString("NOME");
+				Date dataNascimento = rs.getDate(3);
+				double renda = rs.getDouble(4);
+				Aluno aluno = new Aluno(ra,nome,dataNascimento,renda);
+				return aluno;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		return null;
 	}
-	
-	public void atualizar( Aluno aluno ) {}
-	
-	public void excluir( Aluno aluno ) {}
-	
+
+	public void atualizar( Aluno aluno ) {
+		try {
+			String sql = "UPDATE ALUNOS SET nome=?,dataNascimento=?,RENDA=? WHERE RA=?";
+			PreparedStatement pstmt = connection.prepareStatement(sql);
+			pstmt.setString(1, aluno.getNome());
+			pstmt.setDate(2, new java.sql.Date(aluno.getDataNascimento().getTime()));
+			pstmt.setDouble(3, aluno.getSalario());
+			pstmt.setInt(4, aluno.getRa());
+			pstmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void excluir( Aluno aluno ) {
+		try {
+			String sql = "DELETE FROM ALUNOS WHERE RA=?";
+			PreparedStatement pstmt = connection.prepareStatement(sql);
+			pstmt.setInt(1, aluno.getRa());
+			pstmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
 	public static void main(String[] args) {
 		DaoAluno dao = new DaoAluno();
-		dao.inserir(new Aluno(999,"teste999",new Date(), 999));
+		//dao.excluir(new Aluno(999,"teste999Novo",new Date(), 8888));
+		System.out.println(dao.getLista());
 	}
 }
