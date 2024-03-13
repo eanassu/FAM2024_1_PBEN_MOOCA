@@ -108,7 +108,8 @@ public class DaoAluno {
 
 	public static void main(String[] args) {
 		DaoAluno dao = new DaoAluno();
-		//dao.excluir(new Aluno(999,"teste999Novo",new Date(), 8888));
-		System.out.println(dao.getLista());
+		//dao.inserir(new Aluno(999,"teste999Novo",new Date(), 8888));
+		dao.excluir(new Aluno(999,"teste999Novo",new Date(), 8888));
+		//System.out.println(dao.buscarPeloRa(999));
 	}
 }
