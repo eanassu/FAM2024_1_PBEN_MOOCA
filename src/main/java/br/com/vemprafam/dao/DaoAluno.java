@@ -24,6 +24,7 @@ public class DaoAluno {
 			connection = DriverManager.getConnection(url, user, password);
 		} catch (SQLException e) {
 			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -38,6 +39,7 @@ public class DaoAluno {
 			pstmt.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 
 	}
@@ -58,6 +60,7 @@ public class DaoAluno {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 		return result;
 	}
@@ -77,6 +80,7 @@ public class DaoAluno {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 		return null;
 	}
@@ -92,6 +96,7 @@ public class DaoAluno {
 			pstmt.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -103,6 +108,7 @@ public class DaoAluno {
 			pstmt.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 	}
 
