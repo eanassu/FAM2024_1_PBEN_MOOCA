@@ -2,9 +2,9 @@ package br.com.vemprafam.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.text.NumberFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.List;
+import java.util.Date;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -16,16 +16,16 @@ import br.com.vemprafam.dao.DaoAluno;
 import br.com.vemprafam.pojo.Aluno;
 
 /**
- * Servlet implementation class ServletTabela
+ * Servlet implementation class ServletCadastro
  */
-@WebServlet("/ServletTabela")
-public class ServletTabela extends HttpServlet {
+@WebServlet("/alterarAluno")
+public class ServletAlteracao extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public ServletTabela() {
+    public ServletAlteracao() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -35,33 +35,30 @@ public class ServletTabela extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		PrintWriter out = response.getWriter();
-		DaoAluno dao = new DaoAluno();
+		int ra = Integer.parseInt(request.getParameter("ra"));
+		String nome = request.getParameter("nome");
 		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-		NumberFormat currencyFormat = NumberFormat.getCurrencyInstance();
+		Date dataNascimento;
+		try {
+			dataNascimento = dateFormat.parse(request.getParameter("dataNascimento"));
+		} catch (ParseException e) {
+			dataNascimento = new Date();
+		}
+		double renda = Double.parseDouble(request.getParameter("renda"));
+		DaoAluno dao = new DaoAluno();
+		dao.atualizar(new Aluno(ra,nome,dataNascimento,renda));
 		out.println("<!DOCTYPE html>\r\n"
 				+ "<html>\r\n"
 				+ "<head>\r\n"
 				+ "<meta charset=\"ISO-8859-1\">\r\n"
-				+ "<title>tabela</title>\r\n"
+				+ "<title>Resultado</title>\r\n"
 				+ "</head>\r\n"
 				+ "<body>\r\n"
-				+ "<table border='1'>\r\n"
-				+ "<tr>\r\n"
-				+ "<th>RA</th><th>nome</th><th>data de nascimento</th><th>renda</th>\r\n"
-				+ "</tr>\r\n");
-			List<Aluno> lista = dao.getLista();
-			for( Aluno a: lista ) {
-		         out.println("<tr>\r\n"
-				+ "<td>" + a.getRa() + "</td>"
-				+ "<td>" + a.getNome() + "</td>"
-				+ "<td>" + dateFormat.format(a.getDataNascimento()) +"</td>"
-				+ "<td>" + currencyFormat.format(a.getRenda()) + "</td>\r\n"
-				+ "</tr>\r\n");
-			}
-			out.println( "</table>\r\n"
+				+ "<p>Alterado</p>\r\n"
 				+ "<a href='/Projeto'>voltar</a>"
 				+ "</body>\r\n"
 				+ "</html>");
+
 	}
 
 	/**
