@@ -14,11 +14,12 @@ href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
 <title>Formulário</title>
 </head>
 <body>
-<form action="cadastrarAluno">
+<form action="Controller">
 RA:<input type='text' name='ra'/><br/>
 nome:<input type='text' name='nome'/><br/>
 data de nascimento:<fam:campoData id='dataNascimento'/><br/>
 renda:<input type='text' name='renda'/><br/>
+<input type='hidden' name='op' value='Cadastrar'/>
 <input type='submit' value='enviar'>
 </form>
 <a href='/Projeto'>voltar</a>

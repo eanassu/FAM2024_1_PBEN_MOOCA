@@ -1,31 +1,27 @@
 package br.com.vemprafam.servlet;
 
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import br.com.vemprafam.dao.DaoAluno;
-import br.com.vemprafam.pojo.Aluno;
+import br.com.vemprafam.logica.Logica;
 
 /**
- * Servlet implementation class ServletCadastro
+ * Servlet implementation class SevletController
  */
-@WebServlet("/cadastrarAluno")
-public class ServletCadastro extends HttpServlet {
+@WebServlet("/Controller")
+public class SevletController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public ServletCadastro() {
+    public SevletController() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -34,21 +30,18 @@ public class ServletCadastro extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		PrintWriter out = response.getWriter();
-		int ra = Integer.parseInt(request.getParameter("ra"));
-		String nome = request.getParameter("nome");
-		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-		Date dataNascimento;
+		String op = request.getParameter("op");
+		String className = "br.com.vemprafam.logica.Logica"+op;
 		try {
-			dataNascimento = dateFormat.parse(request.getParameter("dataNascimento"));
-		} catch (ParseException e) {
-			dataNascimento = new Date();
+			Class<?> classe = Class.forName(className);
+			Logica logica = (Logica) classe.getDeclaredConstructor().newInstance();
+			String pagina = logica.executar(request, response);
+			RequestDispatcher rd = request.getRequestDispatcher(pagina);
+			rd.forward(request, response);
+		} catch(Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
-		double renda = Double.parseDouble(request.getParameter("renda"));
-		DaoAluno dao = new DaoAluno();
-		dao.inserir(new Aluno(ra,nome,dataNascimento,renda));
-		out.println("inserido");
-
 	}
 
 	/**
